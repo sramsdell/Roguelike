@@ -1,4 +1,4 @@
-import pygame,sys,random,stdarray
+import pygame,sys,random
 sys.dont_write_bytecode = True
 from objects import *
 from maps import *

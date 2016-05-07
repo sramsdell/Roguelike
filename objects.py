@@ -1,4 +1,4 @@
-import pygame, sys, random, stdarray
+import pygame, sys, random
 
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -21,20 +21,22 @@ class Game:
 class Map:
 
     def __init__(self, grid,n = 10,m = 10):
-        
-        mapp = stdarray.create2D(n,m)
+        self.n = n
+        self.m = m
+        #mapp = stdarray.create2D(n,m)
+        mapp = [[None for col in range(self.n)] for row in range(self.m)]
         for i, v in enumerate(mapp):
             for j, w in enumerate(v):
                 mapp[i][j] = grid[i][j]
         self.map = mapp
-        self.n = n
-        self.m = m
+
     def update(self):
         pass
     def get_map(self):
         return self.map
     def map_update(self, coordinate, value):
-        lis = stdarray.create2D(self.n,self.m)
+        #lis = stdarray.create2D(self.n,self.m)
+        lis = [[None for col in range(self.n)] for row in range(self.m)]
         for i, v in  enumerate(self.map):
             
             for j, w in enumerate(v):
