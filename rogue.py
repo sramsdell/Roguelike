@@ -3,12 +3,12 @@ sys.dont_write_bytecode = True
 from objects import *
 from maps import *
 
-SIZE = (500,500)
+SIZE = (300,300)
 screen = pygame.display.set_mode(SIZE)
 
 # inits
 game = Game(SIZE)       
-hero = Hero(game,bot = False)
+hero = Hero(game,bot = True)
 hero1 = Hero(game,bot = False)
 hero1.color = PINK
 game.add_hero_to_set(hero)
@@ -87,7 +87,7 @@ class IntroState(MasterState):
         self.myfont = pygame.font.SysFont("fixedsys", 20)
     def update(self):
         hero.hunt(grid)
-        
+        pass
     def render(self,screen):
         screen.fill(BLUE)
         logic(game,grid,screen,cam)
@@ -96,8 +96,8 @@ class IntroState(MasterState):
         for event in events:
             self.quit(event)
             if event.type == pygame.KEYDOWN:
-                hero.move(event.key,grid,cam)
-                hero1.move(event.key,grid,cam)
+                hero.move(event.key,grid,cam,game)
+                hero1.move(event.key,grid,cam,game)
                 if event.key == pygame.K_p:
                     self.currentstate.change(PlayState_1(screen))
         return True
