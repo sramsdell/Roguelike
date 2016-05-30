@@ -4,10 +4,11 @@ from objects import *
 from maps import *
 
 SIZE = (300,300)
+SCALE = 50
 screen = pygame.display.set_mode(SIZE)
 
 # inits
-game = Game(SIZE)       
+game = Game(SIZE, SCALE)       
 hero = Hero(game,bot = True)
 hero1 = Hero(game,bot = False)
 hero1.color = PINK

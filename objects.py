@@ -9,7 +9,7 @@ YELLOW = (0,255,255)
 
 class Game:
 
-    def __init__(self,size, scale = 50):
+    def __init__(self, size, scale = 50):
         self.hero_set = set()
         self.scale = scale
         self.size = size
