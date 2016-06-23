@@ -1,20 +1,16 @@
-import pygame,sys,random
+import sys
 sys.dont_write_bytecode = True
+import pygame
+import random
 from objects import *
 from maps import *
 
-SIZE = (300,300)
-SCALE = 50
-screen = pygame.display.set_mode(SIZE)
 
-# inits
-game = Game(SIZE, SCALE)       
-hero = Hero(game,bot = True)
-hero1 = Hero(game,bot = False)
-hero1.color = PINK
-game.add_hero_to_set(hero)
-game.add_hero_to_set(hero1)
-cam = Camera(game, hero1)
+SIZE = (500, 500)
+SCALE = 25
+screen = pygame.display.set_mode(SIZE)
+game = Game(SIZE, SCALE)
+
 
 def main():
     pygame.init()
@@ -46,7 +42,7 @@ class TransManager:
     def update(self):
         self.state.update()
 
-    def render(self,screen):
+    def render(self, screen):
         self.state.render(screen)
 
 
@@ -63,14 +59,16 @@ class MasterState:
 
 class PlayState_1(MasterState):
     def __init__(self, screen):
-        MasterState.__init__(self,screen)
+        MasterState.__init__(self, screen)
         self.myfont = pygame.font.SysFont("fixedsys", 20)
+
     def update(self):
         pass
-    def render(self,screen):
+
+    def render(self, screen):
         screen.fill(YELLOW)
 
-    def event_handler(self,events):
+    def event_handler(self, events):
 
         for event in events:
             self.quit(event)
@@ -84,25 +82,27 @@ class PlayState_1(MasterState):
 
 class IntroState(MasterState):
     def __init__(self, screen):
-        MasterState.__init__(self,screen)
+        MasterState.__init__(self, screen)
         self.myfont = pygame.font.SysFont("fixedsys", 20)
+
     def update(self):
-        hero.hunt(grid)
         pass
-    def render(self,screen):
+
+    def render(self, screen):
         screen.fill(BLUE)
-        logic(game,grid,screen,cam)
-    def event_handler(self,events):
+        logic(game, grid, screen)
+
+    def event_handler(self, events):
 
         for event in events:
             self.quit(event)
             if event.type == pygame.KEYDOWN:
-                hero.move(event.key,grid,cam,game)
-                hero1.move(event.key,grid,cam,game)
+                for i in game.get_hero_set():
+                    i.move(event.key, grid, game)
                 if event.key == pygame.K_p:
                     self.currentstate.change(PlayState_1(screen))
         return True
-        
+
 
 if __name__ == '__main__':
     main()
