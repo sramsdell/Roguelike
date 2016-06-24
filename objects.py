@@ -66,7 +66,7 @@ class Map:
         self.view = list(self.screen_size)
         self.a = 0
         self.b = 0
-
+        self.item_set = set()
         #mapp = stdarray.create2D(n,m)
         mapp = [[None for col in range(self.n)] for row in range(self.m)]
         for i, v in enumerate(mapp):
@@ -74,6 +74,12 @@ class Map:
                 mapp[i][j] = grid[i][j]
         self.map = mapp
 
+    def get_item_set(self):
+        return self.item_set
+    def add_item_to_set(self, item):
+        self.item_set.add(item)
+    def del_item_from_set(self, item):
+        self.item_set.discard(item)
     def get_mob_set(self):
         return self.mob_set
 
@@ -117,6 +123,24 @@ class Map:
                     lis[i][j] = w
         self.map = lis
 
+
+class Item:
+
+	def __init__(self, pos, game):
+		self._pos = pos
+		self._scale = game.get_scale()
+
+	def update(self):
+		pass
+
+	def render(self, screen, camera):
+		pygame.draw.rect(screen, YELLOW,
+                         [[self._pos[0] + camera.get_x(),
+                           self._pos[1] + camera.get_y()],
+                          [self._scale, self._scale]])
+
+	def get_pos(self):
+		return self._pos
 
 class Tile:
 
@@ -178,16 +202,18 @@ class Mob:
         self.pos = pos[:]
         self.scale = game.get_scale()
         self.move_lis = ["."]
-        self.value = "c"
+        self.value = "m"
         self.sight = 7
         self.turn = 0
 
-    def dead(self, grid):
-        self.value = "."
-        self.map_update(grid)
+    def get_value(self):
+        return self.value
+
+    def dead(self, grid, value):
+        self.map_update(grid, value)
+
     def add_turn(self, num):
         self.turn += num
-        print self.turn
 
     def get_sight(self):
         return self.sight
@@ -208,13 +234,13 @@ class Mob:
                            self.pos[1] + camera.get_y()],
                           [self.scale, self.scale]])
 
-    def map_update(self, grid):
+    def map_update(self, grid, value):
         grid.map_update([self.pos[1] / self.scale, self.pos[0] / self.scale],
-                        self.value)
+                        value)
 
     def ind_move(self, grid, game):
         smart = 100
-        
+
         no_move = []
         for tile in grid.get_tile_set():
             no_move += [tile.get_coordinates()]
@@ -267,7 +293,10 @@ class Mob:
                 if True:#if pygame.time.get_ticks() % 200 <= 40:
                     for i in game.get_hero_set():
                         if distance(i.get_pos(), self.pos) / game.get_scale() < self.sight:
+                            self.map_update(grid, ".")
                             self.pos = self.ind_move(grid, game)[0]
+                            for i in grid.get_map():
+                                print i
 
 
 class Hero:
@@ -276,6 +305,24 @@ class Hero:
         self.scale = game.get_scale()
         self.bot = bot
         self.color = RED
+        self.held_item_set = set()
+        self.value = "H"
+
+    def map_update(self, grid, value="z"):
+        grid.map_update([self.pos[1] / self.scale, self.pos[0] / self.scale],
+                        value)
+
+    def get_value(self):
+        return self.value
+
+	def get_held_item_set(self):
+		return self.held_item_set
+
+    def add_held_item_to_set(self, item):
+		self.held_item_set.add(item)
+
+    def del_held_item_from_set(self, item):
+        self.held_item_set.discard(item)
 
     def get_pos(self):
         return self.pos
@@ -301,7 +348,7 @@ class Hero:
             if distance(mob.get_pos(), self.pos) / game.get_scale() < mob.get_sight():
                 mob.add_turn(1)
 
-            
+
         no_move = []
         for tile in grid.get_tile_set():
             no_move += [tile.get_coordinates()]
@@ -309,18 +356,22 @@ class Hero:
         if not self.bot:
             if key == pygame.K_UP:
                 if [self.pos[0], self.pos[1] - self.scale] not in no_move:
+                    self.map_update(grid)
                     self.pos[1] -= self.scale
 
             if key == pygame.K_DOWN:
                 if [self.pos[0], self.pos[1] + self.scale] not in no_move:
+                    self.map_update(grid)
                     self.pos[1] += self.scale
 
             if key == pygame.K_LEFT:
                 if [self.pos[0] - self.scale, self.pos[1]] not in no_move:
+                    self.map_update(grid)
                     self.pos[0] -= self.scale
 
             if key == pygame.K_RIGHT:
                 if [self.pos[0] + self.scale, self.pos[1]] not in no_move:
+                    self.map_update(grid)
                     self.pos[0] += self.scale
 
 
@@ -348,7 +399,6 @@ def hero_spawn(grid, game):
     pos = random.choice(lis)
 
     if len(game.get_hero_set()) < 1:
-        print "hero"
         hero = Hero(pos, game, bot=False)
         camera = Camera(game, hero)
         game.add_hero_to_set(hero)
@@ -362,9 +412,17 @@ def heros_mob_collide(hero, game, grid):
     for mob in mob_set:
         for hero in heros:
             if mob.get_pos() == hero.get_pos():
-                mob.dead(grid)
+                mob.dead(grid, ".")
                 grid.del_mob_from_set(mob)
 
+def heros_item_collide(hero, game, grid):
+	item_set = grid.get_held_item_set()
+	heros = game.get_hero_set()
+	for item in item_set:
+		for hero in heros:
+			if item.get_pos() == hero.get_pos():
+				hero.add_held_item_to_set(item)
+				grid.del_item_from_set(item)
 
 def tile_generate(game, grid, camera=None):
     scale = game.get_scale()
@@ -377,7 +435,7 @@ def tile_generate(game, grid, camera=None):
                         tile = Wall([j, i], scale)
                         grid.add_tile_to_set(tile)
 
-                if w == "c":
+                if w == "m":
                     pass
 
 
@@ -393,8 +451,9 @@ def logic(game, grid, screen):
         for i in grid.get_mob_set():
             i.hunt(grid, game)
             i.render(screen, camera)
-            i.map_update(grid)
+            i.map_update(grid, i.get_value())
 
         for hero in game.get_hero_set():
             heros_mob_collide(hero, game, grid)
             hero.render(screen, camera)
+            hero.map_update(grid, value=hero.get_value())
