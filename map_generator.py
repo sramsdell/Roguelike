@@ -1,7 +1,9 @@
 import random
 import math
 import copy
+import sys
 
+sys.dont_write_bytecode = True
 
 def distance(x, y):
     """ takes lists """

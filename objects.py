@@ -3,6 +3,8 @@ import sys
 import random
 from map_generator import distance
 
+sys.dont_write_bytecode = True
+
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 PINK = (250, 30, 200)
@@ -76,10 +78,13 @@ class Map:
 
     def get_item_set(self):
         return self.item_set
+
     def add_item_to_set(self, item):
         self.item_set.add(item)
+
     def del_item_from_set(self, item):
         self.item_set.discard(item)
+
     def get_mob_set(self):
         return self.mob_set
 
@@ -127,20 +132,23 @@ class Map:
 class Item:
 
 	def __init__(self, pos, game):
-		self._pos = pos
-		self._scale = game.get_scale()
-
+            self._pos = pos
+            self._scale = game.get_scale()
+            self.type = random.choice(["apple","banana","cheese"])
 	def update(self):
-		pass
+            pass
 
 	def render(self, screen, camera):
-		pygame.draw.rect(screen, YELLOW,
-                         [[self._pos[0] + camera.get_x(),
-                           self._pos[1] + camera.get_y()],
-                          [self._scale, self._scale]])
+	    pygame.draw.rect(screen, YELLOW,
+                             [[self._pos[0] + camera.get_x(),
+                               self._pos[1] + camera.get_y()],
+                              [self._scale, self._scale]])
 
 	def get_pos(self):
 		return self._pos
+
+	def __str__(self):
+            return self.type
 
 class Tile:
 
@@ -295,8 +303,6 @@ class Mob:
                         if distance(i.get_pos(), self.pos) / game.get_scale() < self.sight:
                             self.map_update(grid, ".")
                             self.pos = self.ind_move(grid, game)[0]
-                            for i in grid.get_map():
-                                print i
 
 
 class Hero:
@@ -308,7 +314,7 @@ class Hero:
         self.held_item_set = set()
         self.value = "H"
 
-    def map_update(self, grid, value="z"):
+    def map_update(self, grid, value="."):
         grid.map_update([self.pos[1] / self.scale, self.pos[0] / self.scale],
                         value)
 
@@ -354,6 +360,10 @@ class Hero:
             no_move += [tile.get_coordinates()]
 
         if not self.bot:
+            if key == pygame.K_SPACE:
+                for i in self.held_item_set:
+                    print i
+
             if key == pygame.K_UP:
                 if [self.pos[0], self.pos[1] - self.scale] not in no_move:
                     self.map_update(grid)
@@ -389,6 +399,20 @@ def mob_spawn(grid, game):
         grid.add_mob_to_set(mob)
 
 
+def item_spawn(grid, game):
+    lis = []
+    for i, v in enumerate(grid.get_map()):
+        for j, w in enumerate(v):
+
+            if grid.get_map()[j][i] == ".":
+                    lis += [[i * game.get_scale(), j * game.get_scale()]]
+    pos = random.choice(lis)
+
+    if len(grid.get_mob_set()) < 4:
+        item = Item(pos, game)
+        grid.add_item_to_set(item)
+
+
 def hero_spawn(grid, game):
     lis = []
     for i, v in enumerate(grid.get_map()):
@@ -415,14 +439,16 @@ def heros_mob_collide(hero, game, grid):
                 mob.dead(grid, ".")
                 grid.del_mob_from_set(mob)
 
+
 def heros_item_collide(hero, game, grid):
-	item_set = grid.get_held_item_set()
-	heros = game.get_hero_set()
-	for item in item_set:
-		for hero in heros:
-			if item.get_pos() == hero.get_pos():
-				hero.add_held_item_to_set(item)
-				grid.del_item_from_set(item)
+    item_set = grid.get_item_set().copy()
+    heros = game.get_hero_set()
+    for item in item_set:
+    	for hero in heros:
+            if item.get_pos() == hero.get_pos():
+    		hero.add_held_item_to_set(item)
+    		grid.del_item_from_set(item)
+
 
 def tile_generate(game, grid, camera=None):
     scale = game.get_scale()
@@ -443,17 +469,23 @@ def logic(game, grid, screen):
     mob_spawn(grid, game)
     tile_generate(game, grid)
     hero_spawn(grid, game)
+    item_spawn(grid, game)
     for camera in game.get_camera_set():
         camera.in_view()
+
+        for item in grid.get_item_set():
+            item.render(screen, camera)
+
         for tile in grid.get_tile_set():
             tile.render(screen, camera)
 
-        for i in grid.get_mob_set():
-            i.hunt(grid, game)
-            i.render(screen, camera)
-            i.map_update(grid, i.get_value())
+        for mob in grid.get_mob_set():
+            mob.hunt(grid, game)
+            mob.render(screen, camera)
+            mob.map_update(grid, mob.get_value())
 
         for hero in game.get_hero_set():
             heros_mob_collide(hero, game, grid)
+            heros_item_collide(hero, game, grid)
             hero.render(screen, camera)
             hero.map_update(grid, value=hero.get_value())

@@ -1,10 +1,10 @@
 import sys
-sys.dont_write_bytecode = True
 import pygame
 import random
 from objects import *
 from maps import *
 
+sys.dont_write_bytecode = True
 
 SIZE = (500, 500)
 SCALE = 25
