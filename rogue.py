@@ -1,10 +1,8 @@
 import sys
-import pygame
-import random
-from objects import *
-from maps import *
-
 sys.dont_write_bytecode = True
+import pygame
+from logics import *
+from maps import *
 
 SIZE = (400, 400)
 SCALE = 20
