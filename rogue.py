@@ -6,8 +6,8 @@ from maps import *
 
 sys.dont_write_bytecode = True
 
-SIZE = (640-96, 640-96)
-SCALE = 32
+SIZE = (400, 400)
+SCALE = 20
 screen = pygame.display.set_mode(SIZE)
 game = Game(SIZE, SCALE)
 
@@ -84,13 +84,18 @@ class IntroState(MasterState):
         MasterState.__init__(self, screen)
         self.myfont = pygame.font.SysFont("fixedsys", 20)
         self.grid = change_level(game)
+##        self.s = pygame.Surface((1000,750), pygame.SRCALPHA)   # per-pixel alpha
+##        self.s.fill((255,255,255,128))                         # notice the alpha value in the color
+        
     def update(self):
         pass
 
     def render(self, screen):
+        screen.fill(GREY)
+        level = logic(game, self.grid, screen)
         self.grid = change_level(game)
-        screen.fill(BLACK)
-        logic(game, self.grid, screen)
+        logic_2(game, self.grid, screen, level)
+##        screen.blit(self.s, (0,0))
 
     def event_handler(self, events):
 

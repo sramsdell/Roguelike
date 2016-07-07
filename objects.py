@@ -3,7 +3,6 @@ import sys
 import random
 from map_generator import distance
 
-
 sys.dont_write_bytecode = True
 
 BLACK = (0, 0, 0)
@@ -12,7 +11,8 @@ PINK = (250, 30, 200)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (0, 255, 255)
-
+GREY = (120, 120, 120)
+GREY_A = (120, 120, 120, 255)
 
 class Game:
 
@@ -28,7 +28,10 @@ class Game:
         return self._level
 
     def add_level(self):
-        self._level += 1     
+        self._level += 1
+
+    def sub_level(self):
+        self._level += -1
 
     def get_turn(self):
         return self.turn
@@ -66,7 +69,8 @@ class Game:
 
 class Map:
 
-    def __init__(self, grid, game, n=10, m=10):
+    def __init__(self, grid, game, n=10, m=10, door_up = True):
+        self.door_up = door_up
         self.n = n
         self.m = m
         self.tile_set = set()
@@ -86,7 +90,9 @@ class Map:
 
         pos = spawn_pos(self, game)
         self.map[pos[1] / self.scale][pos[0] / self.scale] = "d"
-        print pos
+        if self.door_up:
+            pos = spawn_pos(self, game)
+            self.map[pos[1] / self.scale][pos[0] / self.scale] = "D"
         for i in self.map:
             print " ".join(i)
     def get_item_set(self):
@@ -176,7 +182,7 @@ class Tile:
         return self._type
 
     def get_pos(self):
-        return [self._x * self.scale, self._y * self.scale]#[self._x, self._y]
+        return [self._x * self.scale, self._y * self.scale]
 
 
 class Wall(Tile):
@@ -200,6 +206,21 @@ class Door(Tile):
 
     def render(self, screen, camera):
         pygame.draw.rect(screen, PINK,
+                         [[(self._x * self.scale) + camera.get_x(),
+                           (self._y * self.scale) + camera.get_y()],
+                          [self.scale, self.scale]])
+
+    def get_coordinates(self):
+        pass
+
+
+class Door_up(Tile):
+    def __init__(self, pos, scale):
+        Tile.__init__(self, pos, scale)
+        self._type = "Door_up"
+
+    def render(self, screen, camera):
+        pygame.draw.rect(screen, YELLOW,
                          [[(self._x * self.scale) + camera.get_x(),
                            (self._y * self.scale) + camera.get_y()],
                           [self.scale, self.scale]])
@@ -386,6 +407,10 @@ class Hero:
         self.pos[0] += lis[0]
         self.pos[1] += lis[1]
 
+    def tele_pos(self, lis):
+        self.pos[0] = lis[0]
+        self.pos[1] = lis[1]
+
     def is_bot(self):
         return self.bot
 
@@ -411,7 +436,8 @@ class Hero:
         if not self.bot:
             if key == pygame.K_SPACE:
                 for i in self.held_item_set:
-                    print i
+                    print "test"
+                hero_teleport(grid, game)
 
             if key == pygame.K_UP:
                 if [self.pos[0], self.pos[1] - self.scale] not in no_move:
@@ -468,10 +494,12 @@ def hero_spawn(grid, game):
         camera.spawn(hero.get_pos())
 
 def hero_teleport(grid, game):
+    pos = spawn_pos(grid, game)
+    for camera in game.get_camera_set():
+        camera.spawn(pos) 
     for hero in game.get_hero_set():
-        pos = spawn_pos(grid, game)
-        hero.alt_pos(pos)
-
+        hero.tele_pos(pos)   
+    
 def heros_mob_collide(hero, game, grid):
     mob_set = grid.get_mob_set().copy()
     heros = game.get_hero_set()
@@ -490,7 +518,12 @@ def heros_door_collide(hero, game, grid):
             for hero in heros:
                 if tile.get_pos() == hero.get_pos():
                     game.add_level()
-                    #hero_teleport(grid, game)
+
+        if tile.get_type() == "Door_up":
+
+            for hero in heros:
+                if tile.get_pos() == hero.get_pos():
+                    game.sub_level()
 
     
 def heros_item_collide(hero, game, grid):
@@ -520,6 +553,12 @@ def tile_generate(game, grid):
                         tile = Door([j, i], scale)
                         grid.add_tile_to_set(tile)
 
+                if w == "D":
+                    x += 1
+                    if len(grid.get_tile_set()) < x:
+                        tile = Door_up([j, i], scale)
+                        grid.add_tile_to_set(tile)
+
                 if w == ".":
                     x += 1
                     if len(grid.get_tile_set()) < x:
@@ -547,8 +586,17 @@ def logic(game, grid, screen):
             mob.map_update(grid, mob.get_value())
 
         for hero in game.get_hero_set():
+            level = game.get_level()
             heros_door_collide(hero, game, grid)
             heros_mob_collide(hero, game, grid)
             heros_item_collide(hero, game, grid)
             hero.render(screen, camera)
             hero.map_update(grid, value=hero.get_value())
+
+            return level
+    
+def logic_2(game, grid, screen, level):
+    for hero in game.get_hero_set():
+
+        if game.get_level() != level:
+            hero_teleport(grid, game)
