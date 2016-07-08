@@ -2,6 +2,7 @@ import sys
 sys.dont_write_bytecode = True
 import pygame
 import random
+import copy
 from helper import *
 from hero import *
 from mob import *
@@ -10,20 +11,9 @@ from item import *
 from game_camera import *
 from colors import *
 
-def spawn_pos(grid, game):
-    lis = []
-    for i, v in enumerate(grid.get_map()):
-        for j, w in enumerate(v):
-
-            if grid.get_map()[j][i] == ".":
-                    lis += [[i * game.get_scale(), j * game.get_scale()]]
-    pos = random.choice(lis)
-    return pos
-
-
 def mob_spawn(grid, game):
     pos = spawn_pos(grid, game)
-    if len(grid.get_mob_set()) < 10:
+    if len(grid.get_mob_set()) < 5:
         mob = Mob(pos, game)
         grid.add_mob_to_set(mob)
 
@@ -51,7 +41,32 @@ def hero_teleport(grid, game):
         camera.spawn(pos) 
     for hero in game.get_hero_set():
         hero.tele_pos(pos)   
+
+def attacks_mob_collide(game, grid):
+    mob_set = grid.get_mob_set().copy()
+    attacks = game.get_attack_set()
     
+    for mob in mob_set:
+        for attack in attacks:
+            
+            if mob.get_pos() == attack.get_pos():
+                mob.sub_hp(1)
+
+        if mob.get_hp() < 0:
+            mob.dead(grid, ".")
+            grid.del_mob_from_set(mob)
+
+def attacks_hero_collide(hero, game):
+    pass
+##    attacks = game.get_mob_attack_set()
+##    if True:
+##        for attack in attacks:
+##            if hero.get_pos() == attack.get_pos():
+##                hero.sub_hp(1)
+##
+##        if hero.get_hp() < 0:
+##            print "dead" 
+
 def heros_mob_collide(hero, game, grid):
     mob_set = grid.get_mob_set().copy()
     heros = game.get_hero_set()
@@ -87,7 +102,17 @@ def heros_item_collide(hero, game, grid):
     		hero.add_held_item_to_set(item)
     		grid.del_item_from_set(item)
 
+def attack_age(game):
+    for attack in game.get_attack_set():
 
+        if attack.get_lifespan() < 0:
+            game.del_attack_from_set(attack)
+            break
+    for attack in game.get_mob_attack_set():
+
+        if attack.get_lifespan() < 0:
+            game.del_attack_from_set(attack)
+            break
 def tile_generate(game, grid):
     scale = game.get_scale()
     x = 0
@@ -119,10 +144,13 @@ def tile_generate(game, grid):
 
 
 def logic(game, grid, screen):
+    """note to self, I think you figured out why update and render
+    should have different hooks"""
     mob_spawn(grid, game)
     tile_generate(game, grid)
     hero_spawn(grid, game)
     item_spawn(grid, game)
+
     for camera in game.get_camera_set():
         camera.in_view()
 
@@ -132,21 +160,29 @@ def logic(game, grid, screen):
         for tile in grid.get_tile_set():
             tile.render(screen, camera)
 
+        for attack in game.get_attack_set():
+            attacks_mob_collide(game, grid)
+
         for mob in grid.get_mob_set():
             mob.hunt(grid, game)
             mob.render(screen, camera)
             mob.map_update(grid, mob.get_value())
 
+        for attack in game.get_attack_set():
+            attack.render(screen, camera)
+
         for hero in game.get_hero_set():
+            attack_age(game)
             level = game.get_level()
             heros_door_collide(hero, game, grid)
             heros_mob_collide(hero, game, grid)
+            attacks_hero_collide(hero, game)
             heros_item_collide(hero, game, grid)
             hero.render(screen, camera)
             hero.map_update(grid, value=hero.get_value())
-
             return level
-    
+
+
 def logic_2(game, grid, screen, level):
     for hero in game.get_hero_set():
 

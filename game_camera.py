@@ -11,9 +11,29 @@ class Game:
         self.turn = 0
         self.hero_set = set()
         self.camera_set = set()
+        self.attack_set = set()
+        self.mob_attack_set = set()
         self.scale = scale
         self.size = size
         self._level = 1
+
+    def get_mob_attack_set(self):
+        return self.mob_attack_set
+
+    def add_mob_attack_to_set(self, attack):
+        self.mob_attack_set.add(attack)
+
+    def del_mob_attack_from_set(self, attack):
+        self.mob_attack_set.discard(attack)
+        
+    def get_attack_set(self):
+        return self.attack_set
+
+    def add_attack_to_set(self, attack):
+        self.attack_set.add(attack)
+
+    def del_attack_from_set(self, attack):
+        self.attack_set.discard(attack)
 
     def get_level(self):
         return self._level
@@ -65,7 +85,7 @@ class Camera:
         self.scale = game.get_scale()
         self._x = 0
         self._y = 0
-        self.inner_box = self.scale * 4
+        self.inner_box = self.scale * 8
 
     def in_view(self):
 

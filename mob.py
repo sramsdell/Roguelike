@@ -2,16 +2,9 @@ import sys
 sys.dont_write_bytecode = True
 import pygame
 import random
-from map_generator import distance
-
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-PINK = (250, 30, 200)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-YELLOW = (0, 255, 255)
-GREY = (120, 120, 120)
-GREY_A = (120, 120, 120, 255)
+from helper import *
+from colors import *
+from hero import Attack
 
 class Mob:
 
@@ -22,6 +15,14 @@ class Mob:
         self.value = "m"
         self.sight = 7
         self.turn = 0
+        self.hp_max = 20
+        self.hp = 20
+
+    def sub_hp(self, val):
+        self.hp -= val
+
+    def get_hp(self):
+        return self.hp
 
     def get_value(self):
         return self.value
@@ -46,6 +47,17 @@ class Mob:
         pass
 
     def render(self, screen, camera):
+
+        pygame.draw.rect(screen, RED,
+                         [[self.pos[0] + camera.get_x() - 5,
+                           self.pos[1] + camera.get_y() - 5],
+                          [self.scale, 3]])
+
+        pygame.draw.rect(screen, GREEN,
+                         [[self.pos[0] + camera.get_x() - 5,
+                           self.pos[1] + camera.get_y() - 5],
+                          [(self.hp * self.scale) // self.hp_max, 3]])
+        
         pygame.draw.rect(screen, GREEN,
                          [[self.pos[0] + camera.get_x(),
                            self.pos[1] + camera.get_y()],
@@ -61,9 +73,20 @@ class Mob:
         no_move = []
         for tile in grid.get_tile_set():
             no_move += [tile.get_coordinates()]
+
+        for hero in game.get_hero_set():
+            no_move += [hero.get_pos()]
+
+        for mob in grid.get_mob_set():
+            no_move += [mob.get_pos()]
+
         goals = []
-        for i in game.get_hero_set():
-            goals += [i.get_pos()]
+        for hero in game.get_hero_set():
+            goals += [[hero.get_pos()[0], hero.get_pos()[1] - self.scale],
+                      [hero.get_pos()[0] - self.scale,hero.get_pos()[1]],
+                      [hero.get_pos()[0] + self.scale,hero.get_pos()[1]],
+                      [hero.get_pos()[0], hero.get_pos()[1] + self.scale]
+                      ]
 
         move_trace_store = []
         final = [None] * (smart + 1)
@@ -104,11 +127,23 @@ class Mob:
         if self.turn >= 1:
             self.turn -= 1
             goals = []
-            for i in game.get_hero_set():
-                goals += [i.get_pos()]
+            for hero in game.get_hero_set():
+                goals += [hero.get_pos(),
+                          [hero.get_pos()[0], hero.get_pos()[1] - self.scale],
+                          [hero.get_pos()[0] - self.scale,hero.get_pos()[1]],
+                          [hero.get_pos()[0] + self.scale,hero.get_pos()[1]],
+                          [hero.get_pos()[0], hero.get_pos()[1] + self.scale]
+                          ]
             if self.pos not in goals:
-                if True:#if pygame.time.get_ticks() % 200 <= 40:
-                    for i in game.get_hero_set():
-                        if distance(i.get_pos(), self.pos) / game.get_scale() < self.sight:
-                            self.map_update(grid, ".")
+            
+                for i in game.get_hero_set():
+                    if distance(i.get_pos(), self.pos) / game.get_scale() < self.sight:
+                        self.map_update(grid, ".")
+                        try:
                             self.pos = self.ind_move(grid, game)[0]
+                        except:
+                            pass
+            else:
+                """must edit if plan to add multiple players"""
+                attack = Attack(goals[0], game)
+                game.add_mob_attack_to_set(attack)

@@ -54,30 +54,33 @@ class MasterState:
             return False
 
 
-class PlayState_1(MasterState):
+class IntroState(MasterState):
     def __init__(self, screen):
         MasterState.__init__(self, screen)
-        self.myfont = pygame.font.SysFont("fixedsys", 20)
-
+        self.font1 = pygame.font.SysFont("fixedsys",24)
+        self.font2 = pygame.font.SysFont("fixedsys",16)
+        self.text1 = self.font1.render("A Roguelike Concept; SPACE to start",1,BLACK)
+        self.text2 = self.font2.render("Arrows to move, SPACE to attack",1,BLACK)
     def update(self):
         pass
 
     def render(self, screen):
         screen.fill(YELLOW)
-
+        screen.blit(self.text1,(SIZE[0]/2-100,SIZE[1]/2))
+        screen.blit(self.text2,(SIZE[0]/2-75,SIZE[1]/2 + 100))
     def event_handler(self, events):
 
         for event in events:
             self.quit(event)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    pass
+                    self.currentstate.change(PlayState_1(screen))
                 elif event.key == pygame.K_p:
-                    self.currentstate.change(IntroState(screen))
+                    self.currentstate.change(PlayState_1(screen))
         return True
 
 
-class IntroState(MasterState):
+class PlayState_1(MasterState):
     def __init__(self, screen):
         MasterState.__init__(self, screen)
         self.myfont = pygame.font.SysFont("fixedsys", 20)
@@ -103,7 +106,7 @@ class IntroState(MasterState):
                 for i in game.get_hero_set():
                     i.move(event.key, self.grid, game)
                 if event.key == pygame.K_p:
-                    self.currentstate.change(PlayState_1(screen))
+                    self.currentstate.change(IntroState(screen))
         return True
 
 
