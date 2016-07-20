@@ -10,6 +10,7 @@ class Attack:
         self.scale = game.get_scale()
         self.pos = pos
         self.lifespan = 10
+        self.attack_power = 10
 
     def render(self, screen, camera):
         self.lifespan -= 1
@@ -26,6 +27,18 @@ class Attack:
 
     def sub_lifespan(self):
         self.lifespan -= 1
+
+    def get_attack_power(self):
+        return self.attack_power
+
+    def attack(self):
+        if self.attack_power == 0:
+            return 0
+        else:
+            temp = self.attack_power
+            self.attack_power = 0
+            print temp
+            return temp
 
 
 class Hero:
@@ -97,16 +110,7 @@ class Hero:
         pass
 
     def render(self, screen, camera):
-##        pygame.draw.rect(screen, RED,
-##                         [[self.screen_size[0] / 6,
-##                           self.screen_size[0] / 6],
-##                          [self.size[0], 3]])
-##
-##        pygame.draw.rect(screen, GREEN,
-##                         [[self.pos[0] + camera.get_x() - 5,
-##                           self.pos[1] + camera.get_y() - 5],
-##                          [(self.hp * self.scale) // self.hp_max, 3]])
-        
+
         pygame.draw.rect(screen, self.color,
                          [[self.pos[0] + camera.get_x(),
                            self.pos[1] + camera.get_y()],

@@ -50,22 +50,21 @@ def attacks_mob_collide(game, grid):
         for attack in attacks:
             
             if mob.get_pos() == attack.get_pos():
-                mob.sub_hp(1)
+                mob.sub_hp(attack.attack())
 
-        if mob.get_hp() < 0:
+        if mob.get_hp() <= 0:
             mob.dead(grid, ".")
             grid.del_mob_from_set(mob)
 
 def attacks_hero_collide(hero, game):
-    pass
-##    attacks = game.get_mob_attack_set()
-##    if True:
-##        for attack in attacks:
-##            if hero.get_pos() == attack.get_pos():
-##                hero.sub_hp(1)
-##
-##        if hero.get_hp() < 0:
-##            print "dead" 
+    attacks = game.get_mob_attack_set()
+    if True:
+        for attack in attacks:
+            if hero.get_pos() == attack.get_pos():
+                hero.sub_hp(attack.attack())
+
+        if hero.get_hp() <= 0:
+            print "dead" 
 
 def heros_mob_collide(hero, game, grid):
     mob_set = grid.get_mob_set().copy()

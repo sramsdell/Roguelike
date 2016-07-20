@@ -20,6 +20,7 @@ class Mob:
 
     def sub_hp(self, val):
         self.hp -= val
+        print self.hp
 
     def get_hp(self):
         return self.hp
