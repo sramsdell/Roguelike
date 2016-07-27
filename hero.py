@@ -37,7 +37,6 @@ class Attack:
         else:
             temp = self.attack_power
             self.attack_power = 0
-            print temp
             return temp
 
 
@@ -51,15 +50,27 @@ class Hero:
         self.held_item_set = set()
         self.value = "H"
         self.orientation = "s"
-        self.hp = 200
-        self.max_hp = 200
+        self.max_hp = 500
+        self.hp = self.max_hp
+        self.sight = 2
         partial = int(.75 * self.scale)
         self.orientations = {"s" : [0, partial, 0, -partial],
                              "e" : [partial, 0, -partial, 0],
                              "n" : [0, 0, 0, -self.scale + (self.scale - partial)],
                              "w" : [0, 0, -self.scale + (self.scale - partial), 0]}
+        #menu
+        self.font2 = pygame.font.SysFont("fixedsys",self.scale)
+        self.menu = pygame.Surface((self.scale * 5.5, self.scale * 2))
+        self.menu.set_alpha(64)
+        self.menu.fill(BLUE)
+        self.menu1 = self.font2.render("HP: " + str(self.max_hp) + " / " + str(self.hp),
+                                       1,RED)
+        self.menu2 = self.font2.render("MP: " + str("0000") + " / " + str("0000"),
+                                       1,RED)
 
-        
+    def get_sight(self):
+        return self.sight
+
     def get_hp(self):
         return self.hp
 
@@ -79,6 +90,9 @@ class Hero:
     def map_update(self, grid, value="."):
         grid.map_update([self.pos[1] / self.scale, self.pos[0] / self.scale],
                         value)
+
+    def fog_update(self, grid):
+        grid.fog_update([self.pos[1] / self.scale, self.pos[0] / self.scale])
 
     def get_value(self):
         return self.value
@@ -107,7 +121,8 @@ class Hero:
         return self.bot
 
     def update(self, grid):
-        pass
+        self.menu1 = self.font2.render("HP: " + str(self.max_hp) + " / " + str(self.hp),
+                                       1,RED)
 
     def render(self, screen, camera):
 
@@ -126,6 +141,13 @@ class Hero:
                                self.pos[1] + camera.get_y() + self.orientations[i][1]],
                               [self.scale + self.orientations[i][2],
                                self.scale + self.orientations[i][3]]])
+
+        # menu
+        screen.blit(self.menu1,(self.scale,
+                                self.scale))
+        screen.blit(self.menu2,(self.scale,
+                                self.scale * 1.75))
+        screen.blit(self.menu, (self.scale * .75, self.scale * .75))
 
     def move(self, key, grid, game):
         for mob in grid.get_mob_set():

@@ -21,6 +21,24 @@ class Tile:
         return [self._x * self.scale, self._y * self.scale]
 
 
+class Fog(Tile):
+    def __init__(self, pos, scale):
+        Tile.__init__(self, pos, scale)
+        self.ren = pygame.Surface((self.scale, self.scale))
+        self.ren.set_alpha(128)
+        self.ren.fill(BLACK)
+
+    def render(self, screen, camera):
+        screen.blit(self.ren,[(self._x * self.scale) + camera.get_x(),
+                           (self._y * self.scale) + camera.get_y()])
+
+
+##class No_fog(Tile):
+##    ## this is just a "place holder"
+##    def __init__(self, pos, scale):
+##        Tile.__init__(self, pos, scale)
+
+
 class Wall(Tile):
     def __init__(self, pos, scale):
         Tile.__init__(self, pos, scale)

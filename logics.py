@@ -13,14 +13,18 @@ from colors import *
 
 def mob_spawn(grid, game):
     pos = spawn_pos(grid, game)
-    if len(grid.get_mob_set()) < 5:
-        mob = Mob(pos, game)
-        grid.add_mob_to_set(mob)
+    fogs = []
+    for fog in grid.get_fog_set():
+        fogs.append(fog.get_pos())
+    if pos in fogs:
+        if len(grid.get_mob_set()) < 1:
+            mob = Mob(pos, game)
+            grid.add_mob_to_set(mob)
 
 
 def item_spawn(grid, game):
     pos = spawn_pos(grid, game)
-    if len(grid.get_mob_set()) < 4:
+    if len(grid.get_mob_set()) < 0:
         item = Item(pos, game)
         grid.add_item_to_set(item)
 
@@ -64,7 +68,7 @@ def attacks_hero_collide(hero, game):
                 hero.sub_hp(attack.attack())
 
         if hero.get_hp() <= 0:
-            print "dead" 
+            pass
 
 def heros_mob_collide(hero, game, grid):
     mob_set = grid.get_mob_set().copy()
@@ -101,6 +105,16 @@ def heros_item_collide(hero, game, grid):
     		hero.add_held_item_to_set(item)
     		grid.del_item_from_set(item)
 
+def heros_fog_collide(hero, game, grid):
+    scale = game.get_scale()
+    fogs = grid.get_fog_set().copy()
+    heros = game.get_hero_set()
+    for fog in fogs:
+        for hero in heros:
+            sight = hero.get_sight()
+            if distance(hero.get_pos(), fog.get_pos()) <= scale * sight:
+                grid.del_fog_from_set(fog)
+
 def attack_age(game):
     for attack in game.get_attack_set():
 
@@ -112,6 +126,23 @@ def attack_age(game):
         if attack.get_lifespan() < 0:
             game.del_attack_from_set(attack)
             break
+
+def fog_tile_generate(game, grid):
+    scale = game.get_scale()
+    x = 0
+    for i, v in enumerate(grid.get_fog_grid()):
+        for j, w in enumerate(v):
+            if w == 0:
+                x += 1
+                if len(grid.get_fog_set()) < x:
+                    fog = Fog([j, i], scale)
+                    grid.add_fog_to_set(fog)
+            if w == 1:
+                x += 1
+                if len(grid.get_fog_set()) < x:
+                    fog = No_fog([j, i], scale)
+                    grid.add_fog_to_set(fog)
+
 def tile_generate(game, grid):
     scale = game.get_scale()
     x = 0
@@ -141,10 +172,10 @@ def tile_generate(game, grid):
                         tile = Floor([j, i], scale)
                         grid.add_tile_to_set(tile)
 
-
 def logic(game, grid, screen):
     """note to self, I think you figured out why update and render
     should have different hooks"""
+    fog_tile_generate(game, grid)
     mob_spawn(grid, game)
     tile_generate(game, grid)
     hero_spawn(grid, game)
@@ -164,21 +195,26 @@ def logic(game, grid, screen):
 
         for mob in grid.get_mob_set():
             mob.hunt(grid, game)
-            mob.render(screen, camera)
+            mob.render(screen, camera, grid)
             mob.map_update(grid, mob.get_value())
 
         for attack in game.get_attack_set():
             attack.render(screen, camera)
 
+        for fog_tile in grid.get_fog_set():
+            fog_tile.render(screen, camera)
+
         for hero in game.get_hero_set():
             attack_age(game)
             level = game.get_level()
             heros_door_collide(hero, game, grid)
+            heros_fog_collide(hero, game, grid)
             heros_mob_collide(hero, game, grid)
             attacks_hero_collide(hero, game)
             heros_item_collide(hero, game, grid)
             hero.render(screen, camera)
             hero.map_update(grid, value=hero.get_value())
+            hero.update(grid)
             return level
 
 

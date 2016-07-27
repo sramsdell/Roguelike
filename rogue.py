@@ -5,7 +5,7 @@ from logics import *
 from maps import *
 
 SIZE = (400, 400)
-SCALE = 20
+SCALE = 40
 screen = pygame.display.set_mode(SIZE)
 game = Game(SIZE, SCALE)
 
@@ -61,6 +61,7 @@ class IntroState(MasterState):
         self.font2 = pygame.font.SysFont("fixedsys",16)
         self.text1 = self.font1.render("A Roguelike Concept; SPACE to start",1,BLACK)
         self.text2 = self.font2.render("Arrows to move, SPACE to attack",1,BLACK)
+
     def update(self):
         pass
 
@@ -68,6 +69,7 @@ class IntroState(MasterState):
         screen.fill(YELLOW)
         screen.blit(self.text1,(SIZE[0]/2-100,SIZE[1]/2))
         screen.blit(self.text2,(SIZE[0]/2-75,SIZE[1]/2 + 100))
+
     def event_handler(self, events):
 
         for event in events:
@@ -85,8 +87,6 @@ class PlayState_1(MasterState):
         MasterState.__init__(self, screen)
         self.myfont = pygame.font.SysFont("fixedsys", 20)
         self.grid = change_level(game)
-##        self.s = pygame.Surface((1000,750), pygame.SRCALPHA)   # per-pixel alpha
-##        self.s.fill((255,255,255,128))                         # notice the alpha value in the color
         
     def update(self):
         pass
@@ -96,7 +96,6 @@ class PlayState_1(MasterState):
         level = logic(game, self.grid, screen)
         self.grid = change_level(game)
         logic_2(game, self.grid, screen, level)
-##        screen.blit(self.s, (0,0))
 
     def event_handler(self, events):
 

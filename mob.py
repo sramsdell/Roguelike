@@ -13,14 +13,14 @@ class Mob:
         self.scale = game.get_scale()
         self.move_lis = ["."]
         self.value = "m"
-        self.sight = 7
+        self.sight = 6
         self.turn = 0
-        self.hp_max = 20
-        self.hp = 20
+        self.hp_max = 25
+        self.hp = self.hp_max
+        self.speed = 0
 
     def sub_hp(self, val):
         self.hp -= val
-        print self.hp
 
     def get_hp(self):
         return self.hp
@@ -32,7 +32,7 @@ class Mob:
         self.map_update(grid, value)
 
     def add_turn(self, num):
-        self.turn += num
+        self.turn += num + self.speed
 
     def get_sight(self):
         return self.sight
@@ -47,22 +47,25 @@ class Mob:
     def update(self):
         pass
 
-    def render(self, screen, camera):
+    def render(self, screen, camera, grid):
+        fog_lis = []
+        for fog in grid.get_fog_set():
+            fog_lis.append(fog.get_pos())
+        if self.pos not in fog_lis:
+            pygame.draw.rect(screen, RED,
+                             [[self.pos[0] + camera.get_x() - 5,
+                               self.pos[1] + camera.get_y() - 5],
+                              [self.scale, 3]])
 
-        pygame.draw.rect(screen, RED,
-                         [[self.pos[0] + camera.get_x() - 5,
-                           self.pos[1] + camera.get_y() - 5],
-                          [self.scale, 3]])
-
-        pygame.draw.rect(screen, GREEN,
-                         [[self.pos[0] + camera.get_x() - 5,
-                           self.pos[1] + camera.get_y() - 5],
-                          [(self.hp * self.scale) // self.hp_max, 3]])
-        
-        pygame.draw.rect(screen, GREEN,
-                         [[self.pos[0] + camera.get_x(),
-                           self.pos[1] + camera.get_y()],
-                          [self.scale, self.scale]])
+            pygame.draw.rect(screen, GREEN,
+                             [[self.pos[0] + camera.get_x() - 5,
+                               self.pos[1] + camera.get_y() - 5],
+                              [(self.hp * self.scale) // self.hp_max, 3]])
+            
+            pygame.draw.rect(screen, GREEN,
+                             [[self.pos[0] + camera.get_x(),
+                               self.pos[1] + camera.get_y()],
+                              [self.scale, self.scale]])
 
     def map_update(self, grid, value):
         grid.map_update([self.pos[1] / self.scale, self.pos[0] / self.scale],
