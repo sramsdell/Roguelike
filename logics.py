@@ -188,7 +188,7 @@ def logic(game, grid, screen):
             item.render(screen, camera)
 
         for tile in grid.get_tile_set():
-            tile.render(screen, camera)
+            tile.render(screen, camera, grid)
 
         for attack in game.get_attack_set():
             attacks_mob_collide(game, grid)

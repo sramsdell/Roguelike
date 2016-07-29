@@ -52,7 +52,7 @@ class Hero:
         self.orientation = "s"
         self.max_hp = 500
         self.hp = self.max_hp
-        self.sight = 2
+        self.sight = 3
         partial = int(.75 * self.scale)
         self.orientations = {"s" : [0, partial, 0, -partial],
                              "e" : [partial, 0, -partial, 0],
@@ -106,6 +106,9 @@ class Hero:
     def del_held_item_from_set(self, item):
         self.held_item_set.discard(item)
 
+    def get_scale(self):
+        return self.scale
+
     def get_pos(self):
         return self.pos
 
@@ -150,9 +153,9 @@ class Hero:
         screen.blit(self.menu, (self.scale * .75, self.scale * .75))
 
     def move(self, key, grid, game):
-        for mob in grid.get_mob_set():
-            if distance(mob.get_pos(), self.pos) / game.get_scale() < mob.get_sight():
-                mob.add_turn(1)
+##        for mob in grid.get_mob_set():
+##            if distance(mob.get_pos(), self.pos) / self.scale < mob.get_sight():
+##                mob.add_turn(1)
 
 
         no_move = []
@@ -162,31 +165,40 @@ class Hero:
             no_move += [mob.get_pos()]
 
         if not self.bot:
-            if key == pygame.K_SPACE:
+            if key == pygame.K_m:
                 for i in self.held_item_set:
                     pass
+                print "asdf"
+                mob_turn(self, grid)
+                
+            if key == pygame.K_SPACE:
                 self.attack(game)
+                mob_turn(self, grid)
 
             if key == pygame.K_UP:
                 self.orientation = "n"
                 if [self.pos[0], self.pos[1] - self.scale] not in no_move:
                     self.map_update(grid)
                     self.pos[1] -= self.scale
+                    mob_turn(self, grid)
 
             if key == pygame.K_DOWN:
                 self.orientation = "s"
                 if [self.pos[0], self.pos[1] + self.scale] not in no_move:
                     self.map_update(grid)
                     self.pos[1] += self.scale
+                    mob_turn(self, grid)
 
             if key == pygame.K_LEFT:
                 self.orientation = "w"
                 if [self.pos[0] - self.scale, self.pos[1]] not in no_move:
                     self.map_update(grid)
                     self.pos[0] -= self.scale
+                    mob_turn(self, grid)
 
             if key == pygame.K_RIGHT:
                 self.orientation = "e"
                 if [self.pos[0] + self.scale, self.pos[1]] not in no_move:
                     self.map_update(grid)
                     self.pos[0] += self.scale
+                    mob_turn(self, grid)

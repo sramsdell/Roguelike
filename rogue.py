@@ -4,8 +4,8 @@ import pygame
 from logics import *
 from maps import *
 
-SIZE = (400, 400)
-SCALE = 40
+SIZE = (600, 600)
+SCALE = 30
 screen = pygame.display.set_mode(SIZE)
 game = Game(SIZE, SCALE)
 
