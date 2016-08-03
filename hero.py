@@ -50,7 +50,7 @@ class Hero:
         self.held_item_set = set()
         self.value = "H"
         self.orientation = "s"
-        self.max_hp = 500
+        self.max_hp = 100
         self.hp = self.max_hp
         self.sight = 3
         partial = int(.75 * self.scale)

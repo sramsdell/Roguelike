@@ -138,6 +138,16 @@ def fog_tile_generate(game, grid):
                     fog = Fog([j, i], scale)
                     grid.add_fog_to_set(fog)
 
+def hero_die(game, game_grids, state):
+    for hero in game.get_hero_set():
+        if hero.get_hp() > 0:
+            return "2"
+        
+    self = state
+    game_grids.reset()
+    game.reset_game(self.grid)
+    return "1"
+
 
 def tile_generate(game, grid):
     scale = game.get_scale()
@@ -168,7 +178,7 @@ def tile_generate(game, grid):
                         tile = Floor([j, i], scale)
                         grid.add_tile_to_set(tile)
 
-def logic(game, grid, screen):
+def logic(game, grid, screen, state):
     """note to self, I think you figured out why update and render
     should have different hooks"""
     fog_tile_generate(game, grid)
