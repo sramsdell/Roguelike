@@ -87,7 +87,10 @@ class PlayState_1(MasterState):
         MasterState.__init__(self, screen)
         self.myfont = pygame.font.SysFont("fixedsys", 20)
         self.grid = change_level(game)
-        
+
+        #tied to frame rate
+        self.key_speed_max = 5
+        self.key_speed = self.key_speed_max
     def update(self):
         pass
 
@@ -99,13 +102,23 @@ class PlayState_1(MasterState):
 
     def event_handler(self, events):
 
+        if self.key_speed < self.key_speed_max:
+            self.key_speed += 1
         for event in events:
             self.quit(event)
+
             if event.type == pygame.KEYDOWN:
-                for i in game.get_hero_set():
-                    i.move(event.key, self.grid, game)
+
                 if event.key == pygame.K_p:
                     self.currentstate.change(IntroState(screen))
+
+                    game_grids.reset()
+                    game.reset_game(self.grid)
+
+                for hero in game.get_hero_set():
+                    if self.key_speed >= self.key_speed_max:
+                        hero.move(event.key, self.grid, game)
+                        self.key_speed = 0
         return True
 
 

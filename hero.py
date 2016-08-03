@@ -153,10 +153,6 @@ class Hero:
         screen.blit(self.menu, (self.scale * .75, self.scale * .75))
 
     def move(self, key, grid, game):
-##        for mob in grid.get_mob_set():
-##            if distance(mob.get_pos(), self.pos) / self.scale < mob.get_sight():
-##                mob.add_turn(1)
-
 
         no_move = []
         for tile in grid.get_tile_set():
@@ -177,28 +173,28 @@ class Hero:
 
             if key == pygame.K_UP:
                 self.orientation = "n"
+                mob_turn(self, grid)
                 if [self.pos[0], self.pos[1] - self.scale] not in no_move:
                     self.map_update(grid)
                     self.pos[1] -= self.scale
-                    mob_turn(self, grid)
 
             if key == pygame.K_DOWN:
                 self.orientation = "s"
+                mob_turn(self, grid)
                 if [self.pos[0], self.pos[1] + self.scale] not in no_move:
                     self.map_update(grid)
                     self.pos[1] += self.scale
-                    mob_turn(self, grid)
 
             if key == pygame.K_LEFT:
                 self.orientation = "w"
+                mob_turn(self, grid)
                 if [self.pos[0] - self.scale, self.pos[1]] not in no_move:
                     self.map_update(grid)
                     self.pos[0] -= self.scale
-                    mob_turn(self, grid)
 
             if key == pygame.K_RIGHT:
                 self.orientation = "e"
+                mob_turn(self, grid)
                 if [self.pos[0] + self.scale, self.pos[1]] not in no_move:
                     self.map_update(grid)
                     self.pos[0] += self.scale
-                    mob_turn(self, grid)

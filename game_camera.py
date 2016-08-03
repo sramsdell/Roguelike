@@ -77,6 +77,20 @@ class Game:
     def get_size(self):
         return self.size
 
+    def test(self):
+        pass
+        
+    
+    def reset_game(self, grid):
+        self.turn = 0
+        self.hero_set = set()
+        self.camera_set = set()
+        self.attack_set = set()
+        self.mob_attack_set = set()
+        self._level = 1
+        grid.map_reset()
+
+
 class Camera:
 
     def __init__(self, game, hero):

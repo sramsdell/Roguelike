@@ -139,9 +139,10 @@ class Mob:
                           [hero.get_pos()[0], hero.get_pos()[1] + self.scale]
                           ]
             if self.pos not in goals:
-            
+
                 for i in game.get_hero_set():
                     if distance(i.get_pos(), self.pos) / game.get_scale() < self.sight:
+
                         self.map_update(grid, ".")
                         try:
                             self.pos = self.ind_move(grid, game)[0]
@@ -149,5 +150,6 @@ class Mob:
                             pass
             else:
                 """must edit if plan to add multiple players"""
+
                 attack = Attack(goals[0], game)
                 game.add_mob_attack_to_set(attack)

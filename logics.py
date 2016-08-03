@@ -137,11 +137,7 @@ def fog_tile_generate(game, grid):
                 if len(grid.get_fog_set()) < x:
                     fog = Fog([j, i], scale)
                     grid.add_fog_to_set(fog)
-            if w == 1:
-                x += 1
-                if len(grid.get_fog_set()) < x:
-                    fog = No_fog([j, i], scale)
-                    grid.add_fog_to_set(fog)
+
 
 def tile_generate(game, grid):
     scale = game.get_scale()

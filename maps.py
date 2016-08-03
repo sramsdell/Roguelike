@@ -1,14 +1,15 @@
 import sys
 sys.dont_write_bytecode = True
 import pygame
-from rogue import game
+from rogue import *
 from map_generator import generate_map
 from helper import *
 from mob import *
 
 class Map:
 
-    def __init__(self, grid, game, n, m, door_up=True, num_mobs=5):
+    def __init__(self, grid, game, n, m, door_up=True, num_mobs=5, no_fog=False):
+        self.no_fog = no_fog
         self.door_up = door_up
         self.n = n
         self.m = m
@@ -19,15 +20,21 @@ class Map:
         self.screen_size = game.get_size()
         self.view = list(self.screen_size)
         self.init_mobs = num_mobs
-
+        self.grid = grid
         self.item_set = set()
+        self.init()
+
+    def init(self):
         mapp = [[None for col in range(self.n)] for row in range(self.m)]
         for i, v in enumerate(mapp):
             for j, w in enumerate(v):
-                mapp[i][j] = grid[i][j]
+                mapp[i][j] = self.grid[i][j]
         self.map = mapp
 
-        self.fog = [[0 for col in range(self.n)] for row in range(self.m)]
+        if not self.no_fog:
+            self.fog = [[0 for col in range(self.n)] for row in range(self.m)]
+        else:
+            self.fog = [[1 for col in range(self.n)] for row in range(self.m)]
 
         pos = spawn_pos(self, game)
         self.map[pos[1] / self.scale][pos[0] / self.scale] = "d"
@@ -42,6 +49,7 @@ class Map:
             pos = spawn_pos(self, game)
             mob = Mob(pos, game)
             self.mob_set.add(mob)
+
     def get_fog_set(self):
         return self.fog_set
 
@@ -115,9 +123,33 @@ class Map:
                     lis[i][j] = w
         self.map = lis
 
+    def map_reset(self):
+        self.tile_set = set()
+        self.mob_set = set()
+        self.fog_set = set()
+        self.item_set = set()
+        self.init()
 
+##
+##grid = Map(["xxxxxxxxxxxx",
+##            "xxxxxxxxxxxx",
+##            "xx........xx",
+##            "xx........xx",
+##            "xx........xx",
+##            "xx........xx",
+##            "xx........xx",
+##            "xx........xx",
+##            "xx........xx",
+##            "xx........xx",
+##            "xxxxxxxxxxxx",
+##            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True)
+##
 
-grid = Map(["xxxxxxxxxxxx",
+class Grids:
+
+    def __init__(self, game):
+        grid_post = [Map(generate_map(30, 30), game, 30, 30, False) for i in range(10)]
+        grid = Map(["xxxxxxxxxxxx",
             "xxxxxxxxxxxx",
             "xx........xx",
             "xx........xx",
@@ -128,13 +160,37 @@ grid = Map(["xxxxxxxxxxxx",
             "xx........xx",
             "xx........xx",
             "xxxxxxxxxxxx",
-            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=2)
+            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True)
+        grid_pre = ["maybe a warp?", grid]
+        grids = grid_pre + grid_post
+        self.grids = grids
 
-grid_post = [Map(generate_map(30, 30), game, 30, 30, False) for i in range(10)]
-grid_pre = ["maybe a warp?", grid]
-grids = grid_pre + grid_post
+    def test(self):
+        print "test"
 
+    def reset(self):
+        grid_post = [Map(generate_map(30, 30), game, 30, 30, False) for i in range(10)]
+        grid = Map(["xxxxxxxxxxxx",
+            "xxxxxxxxxxxx",
+            "xx........xx",
+            "xx........xx",
+            "xx........xx",
+            "xx........xx",
+            "xx........xx",
+            "xx........xx",
+            "xx........xx",
+            "xx........xx",
+            "xxxxxxxxxxxx",
+            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True)
+        grid_pre = ["maybe a warp?", grid]
+        grids = grid_pre + grid_post
+        self.grids = grids
+
+    def get_grids(self):
+        return self.grids
+
+game_grids = Grids(game)
 
 def change_level(game):
     level = game.get_level()
-    return grids[level]
+    return game_grids.get_grids()[level]
