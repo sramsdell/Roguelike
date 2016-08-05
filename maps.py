@@ -1,6 +1,7 @@
 import sys
 sys.dont_write_bytecode = True
 import pygame
+import random
 from rogue import *
 from map_generator import generate_map
 from helper import *
@@ -8,7 +9,7 @@ from mob import *
 
 class Map:
 
-    def __init__(self, grid, game, n, m, door_up=True, num_mobs=5, no_fog=False):
+    def __init__(self, grid, game, n, m, door_up=True, num_mobs=5, no_fog=False, items_on=True):
         self.no_fog = no_fog
         self.door_up = door_up
         self.n = n
@@ -21,6 +22,7 @@ class Map:
         self.view = list(self.screen_size)
         self.init_mobs = num_mobs
         self.grid = grid
+        self.items_on = items_on
         self.item_set = set()
         self.init()
 
@@ -31,8 +33,15 @@ class Map:
                 mapp[i][j] = self.grid[i][j]
         self.map = mapp
 
+##        for i in self.map:
+##            print i
+
         if not self.no_fog:
             self.fog = [[0 for col in range(self.n)] for row in range(self.m)]
+            for i, v in enumerate(self.fog):
+                for j, w in enumerate(v):
+                    if self.map[i][j] == "x" or self.map[i][j] == " ":
+                        self.fog[i][j] = 1
         else:
             self.fog = [[1 for col in range(self.n)] for row in range(self.m)]
 
@@ -41,14 +50,18 @@ class Map:
         if self.door_up:
             pos = spawn_pos(self, game)
             self.map[pos[1] / self.scale][pos[0] / self.scale] = "D"
-##        for i in self.map:
-##            print " ".join(i)
 
         ##init mob spawn
         for i in range(int(self.init_mobs)):
             pos = spawn_pos(self, game)
             mob = Mob(pos, game)
             self.mob_set.add(mob)
+
+        if self.items_on:
+            for i in range(random.randrange(1, 4)):
+                pos = spawn_pos(self, game)
+                item = Blue_Potion(pos, game)
+                self.item_set.add(item)
 
     def get_fog_set(self):
         return self.fog_set
@@ -160,7 +173,7 @@ class Grids:
             "xx........xx",
             "xx........xx",
             "xxxxxxxxxxxx",
-            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True)
+            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True, items_on=False)
         grid_pre = ["maybe a warp?", grid]
         grids = grid_pre + grid_post
         self.grids = grids
@@ -181,7 +194,7 @@ class Grids:
             "xx........xx",
             "xx........xx",
             "xxxxxxxxxxxx",
-            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True)
+            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True, items_on=False)
         grid_pre = ["maybe a warp?", grid]
         grids = grid_pre + grid_post
         self.grids = grids

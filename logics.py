@@ -24,7 +24,7 @@ def mob_spawn(grid, game):
 
 def item_spawn(grid, game):
     pos = spawn_pos(grid, game)
-    if len(grid.get_mob_set()) < 0:
+    if len(grid.get_item_set()) < 5:
         item = Item(pos, game)
         grid.add_item_to_set(item)
 
@@ -102,7 +102,7 @@ def heros_item_collide(hero, game, grid):
     for item in item_set:
     	for hero in heros:
             if item.get_pos() == hero.get_pos():
-    		hero.add_held_item_to_set(item)
+                item.effect(hero)
     		grid.del_item_from_set(item)
 
 def heros_fog_collide(hero, game, grid):
@@ -185,16 +185,16 @@ def logic(game, grid, screen, state):
     mob_spawn(grid, game)
     tile_generate(game, grid)
     hero_spawn(grid, game)
-    item_spawn(grid, game)
+    #item_spawn(grid, game)
 
     for camera in game.get_camera_set():
         camera.in_view()
 
-        for item in grid.get_item_set():
-            item.render(screen, camera)
-
         for tile in grid.get_tile_set():
             tile.render(screen, camera, grid)
+        
+        for item in grid.get_item_set():
+            item.render(screen, camera, grid)
 
         for attack in game.get_attack_set():
             attacks_mob_collide(game, grid)

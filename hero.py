@@ -50,7 +50,7 @@ class Hero:
         self.held_item_set = set()
         self.value = "H"
         self.orientation = "s"
-        self.max_hp = 100
+        self.max_hp = 1000
         self.hp = self.max_hp
         self.sight = 3
         partial = int(.75 * self.scale)
@@ -76,6 +76,9 @@ class Hero:
 
     def sub_hp(self, val):
         self.hp -= val
+
+    def add_hp(self, val):
+        self.hp += val
 
     def attack(self, game):
         attack_orientations = {"s" : [self.pos[0], self.pos[1] + self.scale],
@@ -124,6 +127,8 @@ class Hero:
         return self.bot
 
     def update(self, grid):
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp
         self.menu1 = self.font2.render("HP: " + str(self.max_hp) + " / " + str(self.hp),
                                        1,RED)
 

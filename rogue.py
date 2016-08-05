@@ -4,6 +4,8 @@ import pygame
 from logics import *
 from maps import *
 
+from image import *
+
 SIZE = (600, 600)
 SCALE = 30
 screen = pygame.display.set_mode(SIZE)
@@ -77,8 +79,8 @@ class IntroState(MasterState):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.currentstate.change(PlayState_1(screen))
-                elif event.key == pygame.K_p:
-                    self.currentstate.change(PlayState_1(screen))
+                elif event.key == pygame.K_m:
+                    self.currentstate.change(MenuState(screen))
         return True
 
 class DeathState(MasterState):
@@ -151,6 +153,35 @@ class PlayState_1(MasterState):
                         self.key_speed = 0
         return True
 
+class MenuState(MasterState):
+    def __init__(self, screen):
+        MasterState.__init__(self, screen)
+        self.font1 = pygame.font.SysFont("fixedsys",24)
+        self.font2 = pygame.font.SysFont("fixedsys",16)
+        self.text1 = self.font1.render("Menu",1,BLACK)
+        self.text2 = self.font2.render("test testtes",1,BLACK)
 
+    def update(self):
+        pass
+
+    def render(self, screen):
+        screen.fill(RED)
+        screen.blit(self.text1,(SIZE[0]/2-100,SIZE[1]/2))
+        screen.blit(self.text2,(SIZE[0]/2-75,SIZE[1]/2 + 100))
+        screen.blit(blue_potion_image,[25,25])
+        blue_potion = pygame.transform.scale(blue_potion_image,[30,30])
+        screen.blit(blue_potion,[0,0])
+        blue = pygame.transform.scale(blue_potion_image,[100,100])
+        screen.blit(blue,[100,100])
+
+    def event_handler(self, events):
+
+        for event in events:
+            self.quit(event)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.currentstate.change(IntroState(screen))
+
+        return True
 if __name__ == '__main__':
     main()
