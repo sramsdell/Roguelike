@@ -69,7 +69,7 @@ class Fog(Tile):
         self.ren.set_alpha(128)
         self.ren.fill(BLACK)
         self.ren.convert_alpha()
-
+    
     def render(self, screen, camera):
         screen.blit(self.ren,[(self._x * self.scale) + camera.get_x(),
                            (self._y * self.scale) + camera.get_y()])

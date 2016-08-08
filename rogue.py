@@ -7,7 +7,7 @@ from maps import *
 from image import *
 
 SIZE = (600, 600)
-SCALE = 30
+SCALE = 10
 screen = pygame.display.set_mode(SIZE)
 game = Game(SIZE, SCALE)
 

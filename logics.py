@@ -113,6 +113,8 @@ def heros_fog_collide(hero, game, grid):
         for hero in heros:
             sight = hero.get_sight()
             if distance(hero.get_pos(), fog.get_pos()) <= scale * sight:
+                pos = [fog.get_pos()[0] / scale, fog.get_pos()[1] / scale]
+                grid.alt_fog_grid(pos, 1)
                 grid.del_fog_from_set(fog)
 
 def attack_age(game):
@@ -130,6 +132,7 @@ def attack_age(game):
 def fog_tile_generate(game, grid):
     scale = game.get_scale()
     x = 0
+    test = 0
     for i, v in enumerate(grid.get_fog_grid()):
         for j, w in enumerate(v):
             if w == 0:
@@ -137,6 +140,7 @@ def fog_tile_generate(game, grid):
                 if len(grid.get_fog_set()) < x:
                     fog = Fog([j, i], scale)
                     grid.add_fog_to_set(fog)
+
 
 def hero_die(game, game_grids, state):
     for hero in game.get_hero_set():

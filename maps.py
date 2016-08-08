@@ -33,9 +33,6 @@ class Map:
                 mapp[i][j] = self.grid[i][j]
         self.map = mapp
 
-##        for i in self.map:
-##            print i
-
         if not self.no_fog:
             self.fog = [[0 for col in range(self.n)] for row in range(self.m)]
             for i, v in enumerate(self.fog):
@@ -62,7 +59,7 @@ class Map:
                 pos = spawn_pos(self, game)
                 item = Blue_Potion(pos, game)
                 self.item_set.add(item)
-
+    
     def get_fog_set(self):
         return self.fog_set
 
@@ -71,6 +68,9 @@ class Map:
 
     def del_fog_from_set(self, fog_tile):
         self.fog_set.discard(fog_tile)
+
+    def alt_fog_grid(self, pos, alt):
+        self.fog[pos[1]][pos[0]] = alt
 
     def get_fog_grid(self):
         return self.fog
@@ -177,9 +177,6 @@ class Grids:
         grid_pre = ["maybe a warp?", grid]
         grids = grid_pre + grid_post
         self.grids = grids
-
-    def test(self):
-        print "test"
 
     def reset(self):
         grid_post = [Map(generate_map(30, 30), game, 30, 30, False) for i in range(10)]
