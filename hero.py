@@ -64,9 +64,9 @@ class Hero:
         self.menu.set_alpha(64)
         self.menu.fill(BLUE)
         self.menu1 = self.font2.render("HP: " + str(self.max_hp) + " / " + str(self.hp),
-                                       1,RED)
+                                       1,(255,255,255))
         self.menu2 = self.font2.render("MP: " + str("0000") + " / " + str("0000"),
-                                       1,RED)
+                                       1,(255,255,255))
 
     def get_sight(self):
         return self.sight
@@ -130,7 +130,7 @@ class Hero:
         if self.hp > self.max_hp:
             self.hp = self.max_hp
         self.menu1 = self.font2.render("HP: " + str(self.max_hp) + " / " + str(self.hp),
-                                       1,RED)
+                                       1,(255,255,255))
 
     def render(self, screen, camera):
 
