@@ -51,7 +51,7 @@ class Map:
         ##init mob spawn
         for i in range(int(self.init_mobs)):
             pos = spawn_pos(self, game)
-            mob = Mob(pos, game)
+            mob = Spider_1(pos, game)
             self.mob_set.add(mob)
 
         if self.items_on:
@@ -161,7 +161,7 @@ class Map:
 class Grids:
 
     def __init__(self, game):
-        grid_post = [Map(generate_map(30, 30), game, 30, 30, False) for i in range(10)]
+        grid_post = [Map(generate_map(40, 40), game, 40, 40, False) for i in range(10)]
         grid = Map(["xxxxxxxxxxxx",
             "xxxxxxxxxxxx",
             "xx........xx",

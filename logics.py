@@ -18,7 +18,7 @@ def mob_spawn(grid, game):
         fogs.append(fog.get_pos())
     if pos in fogs:
         if len(grid.get_mob_set()) < 1:
-            mob = Mob(pos, game)
+            mob = Spider_1(pos, game)
             grid.add_mob_to_set(mob)
 
 

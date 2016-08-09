@@ -4,7 +4,7 @@ sys.dont_write_bytecode = True
 import pygame
     
 class ImageInfo:
-    def __init__(self, center, size, animated = False,lifespan = None):
+    def __init__(self, center, size, animated = False, lifespan = None):
         self.center = center
         self.size = size
         if lifespan:
@@ -26,7 +26,7 @@ class ImageInfo:
         return self.animated
 
 
-##center, size, radius = 0, animated = False, lifespan = None
+##center, size, animated = False, lifespan = None
 blue_potion_info = ImageInfo((25,25),(50,50))
 blue_potion_image = pygame.image.load(os.path.join("images","blue_potion.png"))
 
@@ -38,3 +38,6 @@ brick_3 = pygame.image.load(os.path.join("images","Brick_3.png"))
 floor_1 = pygame.image.load(os.path.join("images","floor_1.png"))
 floor_2 = pygame.image.load(os.path.join("images","floor_2.png"))
 floor_3 = pygame.image.load(os.path.join("images","floor_3.png"))
+
+spider_1_info = ImageInfo((25,25),(50,50), True)
+spider_1 = pygame.image.load(os.path.join("images","Spider_1.png"))
