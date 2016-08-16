@@ -2,11 +2,12 @@ import sys
 sys.dont_write_bytecode = True
 import pygame
 from logics import *
+import menu_logic as menu
 from maps import *
 
 from image import *
 
-SIZE = (600, 600)
+SIZE = (800, 600)
 SCALE = 50
 screen = pygame.display.set_mode(SIZE)
 game = Game(SIZE, SCALE)
@@ -165,14 +166,7 @@ class MenuState(MasterState):
         pass
 
     def render(self, screen):
-        screen.fill(RED)
-        screen.blit(self.text1,(SIZE[0]/2-100,SIZE[1]/2))
-        screen.blit(self.text2,(SIZE[0]/2-75,SIZE[1]/2 + 100))
-        screen.blit(blue_potion_image,[25,25])
-        blue_potion = pygame.transform.scale(blue_potion_image,[30,30])
-        screen.blit(blue_potion,[0,0])
-        blue = pygame.transform.scale(blue_potion_image,[100,100])
-        screen.blit(blue,[100,100])
+        menu.render(self, screen, game)
 
     def event_handler(self, events):
 

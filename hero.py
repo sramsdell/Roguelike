@@ -4,6 +4,8 @@ import pygame
 import random
 from helper import *
 from colors import *
+from item import *
+
 
 class Attack:
     def __init__(self, pos, game):
@@ -47,7 +49,9 @@ class Hero:
         self.screen_size = game.get_size()
         self.bot = bot
         self.color = RED
-        self.held_item_set = set()
+        self.held_item = [Orange_Potion((0,0),game),
+                          Blue_Potion((0,0),game),
+                          Yellow_Potion((0,0),game)]
         self.value = "H"
         self.orientation = "s"
         self.max_hp = 1000
@@ -100,14 +104,14 @@ class Hero:
     def get_value(self):
         return self.value
 
-	def get_held_item_set(self):
-		return self.held_item_set
+    def get_held_item(self):
+	return self.held_item
 
-    def add_held_item_to_set(self, item):
-		self.held_item_set.add(item)
+    def add_held_item(self, item):
+    	self.held_item.append(item)
 
-    def del_held_item_from_set(self, item):
-        self.held_item_set.discard(item)
+    def del_held_item(self, item):
+        self.held_item.discard(item)
 
     def get_scale(self):
         return self.scale
@@ -167,7 +171,7 @@ class Hero:
 
         if not self.bot:
             if key == pygame.K_m:
-                for i in self.held_item_set:
+                for i in self.held_item:
                     pass
                 print "asdf"
                 mob_turn(self, grid)

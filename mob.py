@@ -222,7 +222,7 @@ class Spider_1(Mob):
         self._image = pygame.transform.scale(spider_1, (self.scale, self.scale * 4))
         self._image.convert_alpha()
 
-        self.sight = 12
+        self.sight = 7
         self.hp_max = 12
         self.hp = self.hp_max
         self.speed = .7
@@ -236,8 +236,95 @@ class Spider_1(Mob):
 
             self.health_render(screen, camera, grid)
 
-            self.age += 0.05
+            self.age += 0.08
             current_index = int((self.age % 4) // 1)
+        
+            scroll = [0, self.scale * current_index, self.scale, self.scale]
+            screen.blit(self._image,
+                        [self.pos[0] + camera.get_x(),
+                         self.pos[1] + camera.get_y()],
+                        area=scroll)
+
+class Eye_1(Mob):
+    def __init__(self, pos, game):
+        Mob.__init__(self, pos, game)
+        self._image = pygame.transform.scale(eye_1, (self.scale, self.scale * 4))
+        self._image.convert_alpha()
+
+        self.sight = 12
+        self.hp_max = 21
+        self.hp = self.hp_max
+        self.speed = 0
+
+    def render(self, screen, camera, grid):
+        fog_lis = []
+        for fog in grid.get_fog_set():
+            fog_lis.append(fog.get_pos())
+        
+        if self.pos not in fog_lis:
+
+            self.health_render(screen, camera, grid)
+
+            self.age += 0.08
+            current_index = int((self.age % 4) // 1)
+        
+            scroll = [0, self.scale * current_index, self.scale, self.scale]
+            screen.blit(self._image,
+                        [self.pos[0] + camera.get_x(),
+                         self.pos[1] + camera.get_y()],
+                        area=scroll)
+
+class Squid_1(Mob):
+    def __init__(self, pos, game):
+        Mob.__init__(self, pos, game)
+        self._image = pygame.transform.scale(squid_1, (self.scale, self.scale * 6))
+        self._image.convert_alpha()
+
+        self.sight = 5
+        self.hp_max = 51
+        self.hp = self.hp_max
+        self.speed = 0
+
+    def render(self, screen, camera, grid):
+        fog_lis = []
+        for fog in grid.get_fog_set():
+            fog_lis.append(fog.get_pos())
+        
+        if self.pos not in fog_lis:
+
+            self.health_render(screen, camera, grid)
+
+            self.age += 0.08
+            current_index = int((self.age % 6) // 1)
+        
+            scroll = [0, self.scale * current_index, self.scale, self.scale]
+            screen.blit(self._image,
+                        [self.pos[0] + camera.get_x(),
+                         self.pos[1] + camera.get_y()],
+                        area=scroll)
+
+class Black_spirit_1(Mob):
+    def __init__(self, pos, game):
+        Mob.__init__(self, pos, game)
+        self._image = pygame.transform.scale(black_spirit_1, (self.scale, self.scale * 7))
+        self._image.convert_alpha()
+
+        self.sight = 5
+        self.hp_max = 10
+        self.hp = self.hp_max
+        self.speed = 2
+
+    def render(self, screen, camera, grid):
+        fog_lis = []
+        for fog in grid.get_fog_set():
+            fog_lis.append(fog.get_pos())
+        
+        if self.pos not in fog_lis:
+
+            self.health_render(screen, camera, grid)
+
+            self.age += 0.18
+            current_index = int((self.age % 7) // 1)
         
             scroll = [0, self.scale * current_index, self.scale, self.scale]
             screen.blit(self._image,

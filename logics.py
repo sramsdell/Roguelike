@@ -102,7 +102,7 @@ def heros_item_collide(hero, game, grid):
     for item in item_set:
     	for hero in heros:
             if item.get_pos() == hero.get_pos():
-                item.effect(hero)
+                hero.add_held_item(item)
     		grid.del_item_from_set(item)
 
 def heros_fog_collide(hero, game, grid):

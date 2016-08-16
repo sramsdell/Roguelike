@@ -9,7 +9,7 @@ from mob import *
 
 class Map:
 
-    def __init__(self, grid, game, n, m, door_up=True, num_mobs=5, no_fog=False, items_on=True):
+    def __init__(self, grid, game, n, m, door_up=True, num_mobs=10, no_fog=False, items_on=True):
         self.no_fog = no_fog
         self.door_up = door_up
         self.n = n
@@ -51,7 +51,8 @@ class Map:
         ##init mob spawn
         for i in range(int(self.init_mobs)):
             pos = spawn_pos(self, game)
-            mob = Spider_1(pos, game)
+            mob = random.choice([Spider_1(pos, game), Squid_1(pos, game), Black_spirit_1(pos, game),
+                                Eye_1(pos, game)])
             self.mob_set.add(mob)
 
         if self.items_on:

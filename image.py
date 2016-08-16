@@ -29,6 +29,8 @@ class ImageInfo:
 ##center, size, animated = False, lifespan = None
 blue_potion_info = ImageInfo((25,25),(50,50))
 blue_potion_image = pygame.image.load(os.path.join("images","blue_potion.png"))
+yellow_potion_image = pygame.image.load(os.path.join("images","yellow_potion.png"))
+orange_potion_image = pygame.image.load(os.path.join("images","orange_potion.png"))
 
 brick_0 = pygame.image.load(os.path.join("images","Brick_0.png"))
 brick_1 = pygame.image.load(os.path.join("images","Brick_1.png"))
@@ -41,3 +43,9 @@ floor_3 = pygame.image.load(os.path.join("images","floor_3.png"))
 
 spider_1_info = ImageInfo((25,25),(50,50), True)
 spider_1 = pygame.image.load(os.path.join("images","Spider_1.png"))
+
+eye_1 = pygame.image.load(os.path.join("images","eye_1.png"))
+
+black_spirit_1 = pygame.image.load(os.path.join("images","black_ghost_1.png"))
+
+squid_1 = pygame.image.load(os.path.join("images","squid_1.png"))
