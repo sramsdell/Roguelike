@@ -4,6 +4,7 @@ import pygame
 import random
 from helper import *
 from colors import *
+from sub_menu import *
 
 class Game:
 
@@ -16,6 +17,29 @@ class Game:
         self.scale = scale
         self.size = size
         self._level = 1
+        self.sub_menu = SubMenu(self.size, self.scale)
+        self.sub_menu_on = self.sub_menu.get_is_on()
+        self._ref_hero_pos = [0,0]
+
+    def get_hero_ref(self):
+        return self._ref_hero_pos
+
+    def alt_hero_ref(self, lis):
+        self._ref_hero_pos = list(lis)
+
+    def get_sub_menu(self):
+        return self.sub_menu
+
+    def get_sub_menu_on(self):
+        return self.sub_menu_on
+
+    def sub_menu_on(self):
+        self.sub_menu.turn_on()
+        self.sub_menu_on = True
+
+    def sub_menu_off(self):
+        self.sub_menu.turn_off()
+        self.sub_menu_on = False
 
     def get_mob_attack_set(self):
         return self.mob_attack_set

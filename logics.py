@@ -10,6 +10,7 @@ from tile import *
 from item import *
 from game_camera import *
 from colors import *
+from sub_menu import Message
 
 def mob_spawn(grid, game):
     pos = spawn_pos(grid, game)
@@ -82,12 +83,21 @@ def heros_mob_collide(hero, game, grid):
 def heros_door_collide(hero, game, grid):
     tiles = grid.get_tile_set()
     heros = game.get_hero_set()
+    sub_menu = game.get_sub_menu()
+    #message = Message(game.get_size(), game.get_scale())
     for tile in tiles:
         if tile.get_type() == "Door":
 
             for hero in heros:
-                if tile.get_pos() == hero.get_pos():
-                    game.add_level()
+                
+                if game.get_hero_ref() != hero.get_pos():
+                    if tile.get_pos() == hero.get_pos():
+                        sub_menu.turn_on()    
+
+                        if sub_menu.get_select():
+                            sub_menu.select_off()
+                            sub_menu.turn_off()
+                            game.add_level()
 
         if tile.get_type() == "Door_up":
 

@@ -124,9 +124,11 @@ class PlayState_1(MasterState):
         #tied to frame rate
         self.key_speed_max = 5
         self.key_speed = self.key_speed_max
+        self.sub_menu = game.get_sub_menu()
+
     def update(self):
         pass
-
+        #self.sub_menu = game.get_sub_menu()
 
     def render(self, screen):
         screen.fill(GREY)
@@ -134,7 +136,9 @@ class PlayState_1(MasterState):
         self.grid = change_level(game)
         logic_2(game, self.grid, screen, level)
         self.currentstate.change(self.dict[hero_die(game, game_grids, self)])
-
+        if self.sub_menu.get_is_on():
+            self.sub_menu.render(screen)
+            
     def event_handler(self, events):
 
         if self.key_speed < self.key_speed_max:
@@ -150,9 +154,13 @@ class PlayState_1(MasterState):
 
                 for hero in game.get_hero_set():
                     if self.key_speed >= self.key_speed_max:
-                        hero.move(event.key, self.grid, game)
+                        if self.sub_menu.get_is_on():
+                            self.sub_menu.event_handler(event.key, game)
+                        else:
+                            hero.move(event.key, self.grid, game)
                         self.key_speed = 0
         return True
+
 
 class MenuState(MasterState):
     def __init__(self, screen):
@@ -173,6 +181,8 @@ class MenuState(MasterState):
         for event in events:
             self.quit(event)
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m:
+                    pass
                 if event.key == pygame.K_SPACE:
                     self.currentstate.change(IntroState(screen))
 

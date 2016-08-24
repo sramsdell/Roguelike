@@ -186,6 +186,7 @@ class Hero:
                 if [self.pos[0], self.pos[1] - self.scale] not in no_move:
                     self.map_update(grid)
                     self.pos[1] -= self.scale
+                    game.alt_hero_ref([0,0])
 
             if key == pygame.K_DOWN:
                 self.orientation = "s"
@@ -193,6 +194,7 @@ class Hero:
                 if [self.pos[0], self.pos[1] + self.scale] not in no_move:
                     self.map_update(grid)
                     self.pos[1] += self.scale
+                    game.alt_hero_ref([0,0])
 
             if key == pygame.K_LEFT:
                 self.orientation = "w"
@@ -200,6 +202,7 @@ class Hero:
                 if [self.pos[0] - self.scale, self.pos[1]] not in no_move:
                     self.map_update(grid)
                     self.pos[0] -= self.scale
+                    game.alt_hero_ref([0,0])
 
             if key == pygame.K_RIGHT:
                 self.orientation = "e"
@@ -207,3 +210,4 @@ class Hero:
                 if [self.pos[0] + self.scale, self.pos[1]] not in no_move:
                     self.map_update(grid)
                     self.pos[0] += self.scale
+                    game.alt_hero_ref([0,0])
