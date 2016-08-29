@@ -174,7 +174,7 @@ class Grids:
             "xx........xx",
             "xx........xx",
             "xxxxxxxxxxxx",
-            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True, items_on=False)
+            "xxxxxxxxxxxx"], game, 12, 12, door_up=False, num_mobs=1, no_fog=True, items_on=True)
         grid_pre = ["maybe a warp?", grid]
         grids = grid_pre + grid_post
         self.grids = grids

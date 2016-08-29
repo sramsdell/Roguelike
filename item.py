@@ -39,7 +39,7 @@ class Item:
 class Blue_Potion(Item):
         def __init__(self, pos, game):
                 Item.__init__(self, pos, game)
-                self._type = "blue_potion"
+                self._type = "blue potion"
                 self._image = pygame.transform.scale(blue_potion_image,[self._scale, self._scale])
                 self._image.convert_alpha()
 

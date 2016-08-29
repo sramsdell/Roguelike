@@ -84,7 +84,8 @@ def heros_door_collide(hero, game, grid):
     tiles = grid.get_tile_set()
     heros = game.get_hero_set()
     sub_menu = game.get_sub_menu()
-    #message = Message(game.get_size(), game.get_scale())
+    message = game.get_message()
+
     for tile in tiles:
         if tile.get_type() == "Door":
 
@@ -92,6 +93,7 @@ def heros_door_collide(hero, game, grid):
                 
                 if game.get_hero_ref() != hero.get_pos():
                     if tile.get_pos() == hero.get_pos():
+                        message.selection("door")
                         sub_menu.turn_on()    
 
                         if sub_menu.get_select():
@@ -109,11 +111,21 @@ def heros_door_collide(hero, game, grid):
 def heros_item_collide(hero, game, grid):
     item_set = grid.get_item_set().copy()
     heros = game.get_hero_set()
+    sub_menu = game.get_sub_menu()
+    message = game.get_message()
+
     for item in item_set:
     	for hero in heros:
-            if item.get_pos() == hero.get_pos():
-                hero.add_held_item(item)
-    		grid.del_item_from_set(item)
+
+            if game.get_hero_ref() != hero.get_pos():
+                if item.get_pos() == hero.get_pos():
+                    message.selection("item", item.get_type(),"?")
+                    sub_menu.turn_on()
+                    if sub_menu.get_select():
+                        sub_menu.select_off()
+                        sub_menu.turn_off()
+                        hero.add_held_item(item)
+                        grid.del_item_from_set(item)
 
 def heros_fog_collide(hero, game, grid):
     scale = game.get_scale()

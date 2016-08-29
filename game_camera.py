@@ -17,6 +17,8 @@ class Game:
         self.scale = scale
         self.size = size
         self._level = 1
+
+        self.message = Message(self.size, self.scale)
         self.sub_menu = SubMenu(self.size, self.scale)
         self.sub_menu_on = self.sub_menu.get_is_on()
         self._ref_hero_pos = [0,0]
@@ -26,6 +28,9 @@ class Game:
 
     def alt_hero_ref(self, lis):
         self._ref_hero_pos = list(lis)
+
+    def get_message(self):
+        return self.message
 
     def get_sub_menu(self):
         return self.sub_menu

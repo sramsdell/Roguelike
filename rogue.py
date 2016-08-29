@@ -125,6 +125,7 @@ class PlayState_1(MasterState):
         self.key_speed_max = 5
         self.key_speed = self.key_speed_max
         self.sub_menu = game.get_sub_menu()
+        self.message = game.get_message()
 
     def update(self):
         pass
@@ -138,6 +139,7 @@ class PlayState_1(MasterState):
         self.currentstate.change(self.dict[hero_die(game, game_grids, self)])
         if self.sub_menu.get_is_on():
             self.sub_menu.render(screen)
+            self.message.render(screen)
             
     def event_handler(self, events):
 
