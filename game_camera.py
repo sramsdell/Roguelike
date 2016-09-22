@@ -3,6 +3,7 @@ sys.dont_write_bytecode = True
 import pygame
 import random
 from helper import *
+from tile import *
 from colors import *
 from sub_menu import *
 
@@ -20,6 +21,7 @@ class Game:
 
         self.message = Message(self.size, self.scale)
         self.sub_menu = SubMenu(self.size, self.scale)
+        self.cursor = Cursor(self.size, self.scale)
         self.sub_menu_on = self.sub_menu.get_is_on()
         self._ref_hero_pos = [0,0]
 

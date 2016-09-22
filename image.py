@@ -32,6 +32,8 @@ blue_potion_image = pygame.image.load(os.path.join("images","blue_potion.png"))
 yellow_potion_image = pygame.image.load(os.path.join("images","yellow_potion.png"))
 orange_potion_image = pygame.image.load(os.path.join("images","orange_potion.png"))
 
+cursor = pygame.image.load(os.path.join("images","select.png"))
+
 brick_0 = pygame.image.load(os.path.join("images","Brick_0.png"))
 brick_1 = pygame.image.load(os.path.join("images","Brick_1.png"))
 brick_2 = pygame.image.load(os.path.join("images","Brick_2.png"))

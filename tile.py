@@ -6,8 +6,21 @@ from helper import *
 from colors import *
 from image import *
 
-class Tile:
 
+class Cursor:
+    def __init__(self, size, scale):
+        self._size = size
+        self._scale = scale
+        self._pos = [(scale // 2), (scale // 2)]
+        self._image = cursor
+        self._image = pygame.transform.scale(self._image,[self._scale, self._scale])
+        self._image.convert_alpha()
+
+    def render(self, screen):
+        screen.blit(self._image, self._pos)
+
+
+class Tile:
     def __init__(self, pos, scale):
         self._x = pos[0]
         self._y = pos[1]
